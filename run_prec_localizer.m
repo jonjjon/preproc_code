@@ -20,13 +20,13 @@ locruns = fullfile(loccurp,'run');
 locthis = fullfile(loccurp,'run','preprocessing');
 
 sub_id = 'sub-01';
-filepath = fullfile(locrawd,sub_id);
+filepath = fullfile(locrawd,sub_id,'localizer');
 
 %%
 
 
 file_eeg = [sub_id '_2step-replay_localizer.eeg'];
-file_evt = [sub_id '_events-bst.mat'];
+file_evt = [sub_id '_events-localizer-bst.mat'];
 file_pro = [sub_id '_projection-ssp.mat'];
 
 % read continuous data after filtering
@@ -37,6 +37,8 @@ cfg.lpfreq     =  40;
 cfg.dataset = fullfile(filepath,file_eeg);
 data_eeg  = ft_preprocessing(cfg);
 
+% projection 사용하기 + each trial 확인해가며 40~240, 1~7hz, eye blink 시그널 잘 잡히는지
+% 확인해서 괜찮으면 이후 수동으로 제거 안해줘도 괜찮음
 
 % %% option setting
 % docorrect = 1;
@@ -124,7 +126,7 @@ arti_mat = load(fullfile(filepath,file_evt)).events;
 
 % blink signal(1~7hz) rejection
 % find trials overlapping with blink point
-blink_p = arti_mat(27).times;
+blink_p = arti_mat(46).times;
 blink_temp = [blink_p-0.5; blink_p+0.5]';
 blink_in = [];
 for i=1:length(blink_temp)
@@ -164,7 +166,7 @@ end
 
 % fast noise signal rejection
 % find trials overlapping with fast noise
-high_freq_p = arti_mat(28).times;
+high_freq_p = arti_mat(45).times;
 high_freq_temp = high_freq_p';
 high_freq = [];
 
